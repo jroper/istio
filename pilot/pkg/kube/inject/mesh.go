@@ -31,6 +31,7 @@ const (
 [[- $excludeOutboundIPRangesKey     := "traffic.sidecar.istio.io/excludeOutboundIPRanges" -]]
 [[- $includeInboundPortsKey         := "traffic.sidecar.istio.io/includeInboundPorts" -]]
 [[- $excludeInboundPortsKey         := "traffic.sidecar.istio.io/excludeInboundPorts" -]]
+[[- $excludeOutboundPortsKey         := "traffic.sidecar.istio.io/excludeOutboundPorts" -]]
 [[- $kubevirtInterfacesKey          := "traffic.sidecar.istio.io/kubevirtInterfaces" -]]
 [[- $statusPortValue                := (annotation .ObjectMeta $statusPortKey {{ .StatusPort }}) -]]
 [[- $readinessInitialDelayValue     := (annotation .ObjectMeta $readinessInitialDelayKey "{{ .ReadinessInitialDelaySeconds }}") -]]
@@ -56,6 +57,10 @@ initContainers:
   - "[[ annotation .ObjectMeta $includeInboundPortsKey (includeInboundPorts .Spec.Containers) ]]"
   - "-d"
   - "[[ excludeInboundPort $statusPortValue (annotation .ObjectMeta $excludeInboundPortsKey "{{ .ExcludeInboundPorts }}") ]]"
+  {{ "[[ if (isset .ObjectMeta.Annotations $excludeOutboundPortsKey) -]]" }}
+  - "-o"
+  - "[[ annotation .ObjectMeta $excludeOutboundPortsKey "{{ .ExcludeOutboundPorts }}" ]]"
+  {{ "[[ end -]]" }}
   {{ "[[ if (isset .ObjectMeta.Annotations \"traffic.sidecar.istio.io/kubevirtInterfaces\") -]]" }}
   - "-k"
   - "[[ annotation .ObjectMeta $kubevirtInterfacesKey "{{ .KubevirtInterfaces }}" ]]"

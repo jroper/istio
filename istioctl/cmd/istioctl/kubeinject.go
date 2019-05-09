@@ -143,6 +143,7 @@ var (
 	excludeIPRanges              string
 	includeInboundPorts          string
 	excludeInboundPorts          string
+	excludeOutboundPorts		 string
 	debugMode                    bool
 	emitTemplate                 bool
 
@@ -295,6 +296,7 @@ istioctl kube-inject -f deployment.yaml -o deployment-injected.yaml --injectConf
 					ExcludeIPRanges:              excludeIPRanges,
 					IncludeInboundPorts:          includeInboundPorts,
 					ExcludeInboundPorts:          excludeInboundPorts,
+					ExcludeOutboundPorts:         excludeOutboundPorts,
 					DebugMode:                    debugMode,
 				}); err != nil {
 					return err
@@ -409,10 +411,13 @@ func init() {
 		"Comma separated list of inbound ports. If set, inbound traffic will not be redirected for those "+
 			"ports. Exclusions are only applied if configured to redirect all inbound traffic. By default, no ports "+
 			"are excluded.")
+	injectCmd.PersistentFlags().StringVar(&excludeOutboundPorts, "excludeOutboundPorts", "",
+		"Comma separated list of outbound ports. If set, inbound traffic will not be redirected for those "+
+			"ports.")
 	injectCmd.PersistentFlags().BoolVar(&debugMode, "debug", false, "Use debug images and settings for the sidecar")
 
 	deprecatedFlags := []string{"coreDump", "imagePullPolicy", "includeIPRanges", "excludeIPRanges", "hub", "tag",
-		"includeInboundPorts", "excludeInboundPorts", "debug", "verbosity", "sidecarProxyUID", "setVersionString"}
+		"includeInboundPorts", "excludeInboundPorts", "excludeOutboundPorts", "debug", "verbosity", "sidecarProxyUID", "setVersionString"}
 	for _, opt := range deprecatedFlags {
 		_ = injectCmd.PersistentFlags().MarkDeprecated(opt, "Use --injectConfigMapName or --injectConfigFile instead")
 	}

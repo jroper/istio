@@ -716,6 +716,10 @@ func TestInvalidAnnotations(t *testing.T) {
 			annotation: "excludeinboundports",
 			in:         "traffic-annotations-bad-excludeinboundports.yaml",
 		},
+		{
+			annotation: "excludeoutboundports",
+			in:         "traffic-annotations-bad-excludeoutboundports.yaml",
+		},
 	}
 
 	for _, c := range cases {

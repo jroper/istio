@@ -40,6 +40,10 @@ data:
         - {{ "\"[[ annotation .ObjectMeta `traffic.sidecar.istio.io/includeInboundPorts` (includeInboundPorts .Spec.Containers) ]]\"" }}
         - "-d"
         - {{ "\"[[ excludeInboundPort (annotation .ObjectMeta `status.sidecar.istio.io/port` " }} {{ .Values.global.proxy.statusPort }} {{ ") (annotation .ObjectMeta `traffic.sidecar.istio.io/excludeInboundPorts` " }} "{{ .Values.global.proxy.excludeInboundPorts }}" {{ ") ]]\"" }}
+        {{ "[[ if (isset .ObjectMeta.Annotations `traffic.sidecar.istio.io/excludeOutboundPorts`) -]]" }}
+        - "-o"
+        {{ "- \"[[ index .ObjectMeta.Annotations `traffic.sidecar.istio.io/excludeOutboundPorts` ]]\"" }}
+        {{ "[[ end -]]" }}
         {{ "[[ if (isset .ObjectMeta.Annotations `traffic.sidecar.istio.io/kubevirtInterfaces`) -]]" }}
         - "-k"
         {{ "- \"[[ index .ObjectMeta.Annotations `traffic.sidecar.istio.io/kubevirtInterfaces` ]]\"" }}
